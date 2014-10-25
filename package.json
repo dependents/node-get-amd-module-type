@@ -1,0 +1,36 @@
+{
+  "name": "get-amd-module-type",
+  "version": "0.0.0",
+  "description": "Get the type of AMD module used for an AST node or within a file",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrjoelkemp/node-get-amd-module-type.git"
+  },
+  "keywords": [
+    "module",
+    "type",
+    "amd"
+  ],
+  "author": "Joel Kemp <joel@mrjoelkemp.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrjoelkemp/node-get-amd-module-type/issues"
+  },
+  "homepage": "https://github.com/mrjoelkemp/node-get-amd-module-type",
+  "devDependencies": {
+    "esprima": "~1.2.2",
+    "mocha": "~2.0.1"
+  },
+  "dependencies": {
+    "ast-module-types": "~2.0.1",
+    "esprima": "~1.2.2",
+    "node-source-walk": "~1.1.2"
+  }
+}
