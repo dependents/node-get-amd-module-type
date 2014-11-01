@@ -16,21 +16,8 @@ var esprima = require('esprima');
  *
  * @returns {String|null} the type of module syntax used, or null if it's an unsupported form
  */
-module.exports = function getModuleType(node) {
-  var walker = new Walker();
-  var type;
 
-  if (typeof node === 'string') {
-
-    walker.walk(fs.readFileSync(node, 'utf8'), function(node) {
-      if (type = getModuleType(node)) {
-        walker.stopWalking();
-      }
-    });
-
-    return type;
-  }
-
+function fromAST(node) {
   if (types.isNamedForm(node))        return 'named';
   if (types.isDependencyForm(node))   return 'deps';
   if (types.isREMForm(node))          return 'rem';
@@ -40,3 +27,50 @@ module.exports = function getModuleType(node) {
 
   return null;
 }
+
+function fromSource(source) {
+  if (typeof source === 'undefined') throw new Error('source not supplied');
+
+  var type;
+  var walker = new Walker();
+
+  walker.walk(source, function(node) {
+    if (type = fromAST(node)) {
+      walker.stopWalking();
+    }
+  });
+
+  return type;
+}
+
+function sync(file) {
+  if (! file) throw new Error('filename missing');
+
+  var source = fs.readFileSync(file);
+  return fromSource(source);
+}
+
+module.exports = function(file, cb) {
+  if (! file) throw new Error('filename missing');
+  if (! cb)   throw new Error('callback missing');
+
+  fs.readFile(file, { encoding: "utf8" }, function (err, data) {
+    if (err) {
+      return cb(err);
+    }
+
+    var type;
+
+    try {
+      type = fromSource(data);
+    } catch(error) {
+      return cb(error);
+    }
+
+    cb(null, type);
+  });
+}
+
+module.exports.fromAST = fromAST;
+module.exports.fromSource = fromSource;
+module.exports.sync = sync;
