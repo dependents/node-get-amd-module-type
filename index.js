@@ -71,4 +71,5 @@ module.exports = function(file, cb) {
   });
 }
 
-module.exports.fromAST = fromAST 
+module.exports.fromAST = fromAST;
+module.exports.sync = sync;
