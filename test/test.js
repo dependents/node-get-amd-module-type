@@ -37,6 +37,14 @@ function syncTest(filename, result) {
     });
 }
 
+function sourceTest(filename, result) {
+    it('returns `' + result + '` for ' + filename, function() {
+        var source = fs.readFileSync(path.resolve(__dirname, filename));
+        var type = getType.fromSource(source);
+        assert.equal(type, result);
+    });
+}
+
 describe('get-amd-module-type', function() {
   describe('Async tests', function() {
     testMethodAgainstExpected(asyncTest);
@@ -62,5 +70,9 @@ describe('get-amd-module-type', function() {
 
   describe('Sync tests', function() {
     testMethodAgainstExpected(syncTest);
+  });
+
+  describe('From source tests', function() {
+    testMethodAgainstExpected(sourceTest);
   });
 });

@@ -72,4 +72,5 @@ module.exports = function(file, cb) {
 }
 
 module.exports.fromAST = fromAST;
+module.exports.fromSource = fromSource;
 module.exports.sync = sync;
