@@ -7,15 +7,17 @@
 ```js
 var getType = require('get-amd-module-type');
 
-var type = getType(astNode);
+// Async
+getType('my/file.js', function(err, type) {
 
-// or
+});
 
-var type = getType('my/file.js');
+// Sync
+var type = getType.sync('my/file.js');
+
+// From source code
+var type = getType.fromSource('define() {}');
+
+// From an AST node
+var type = getType.fromAST(node);
 ```
-
-You can supply an AST node, if you're manually traversing through the AST
-and need to check the form of a node.
-
-You can also have the library do the traversal and checking for you by supplying a filename.
-

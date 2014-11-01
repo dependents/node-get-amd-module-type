@@ -1,12 +1,12 @@
 var Walker = require('node-source-walk');
 var types = require('ast-module-types');
 var fs = require('fs');
-var esprima = require('esprima');
 
 /**
- * Identifies the AMD module type
+ * Asynchronously identifies the AMD module type of the given file
  *
- * @param {Object|String} node - An AST node or a filename
+ * @param {Object|String} file - filename
+ * @param {Function} cb - Executed with (err, type)
  *
  * @example
  * define('name', [deps], func)    'named'
@@ -14,23 +14,43 @@ var esprima = require('esprima');
  * define(func(require))           'factory'
  * define({})                      'nodeps'
  *
- * @returns {String|null} the type of module syntax used, or null if it's an unsupported form
+ * @returns {String|null} the supported type of module syntax used, or null
  */
-module.exports = function getModuleType(node) {
-  var walker = new Walker();
-  var type;
+module.exports = function(file, cb) {
+  var self = this;
 
-  if (typeof node === 'string') {
-
-    walker.walk(fs.readFileSync(node, 'utf8'), function(node) {
-      if (type = getModuleType(node)) {
-        walker.stopWalking();
-      }
-    });
-
-    return type;
+  if (! file) {
+    return cb(new Error('filename missing'));
   }
 
+  if (! cb) {
+    return cb(new Error('callback missing'));
+  }
+
+  fs.readFile(file, { encoding: 'utf8' }, function (err, data) {
+    if (err) {
+      return cb(err);
+    }
+
+    var type;
+
+    try {
+      type = fromSource(data);
+    } catch(error) {
+      return cb(error);
+    }
+
+    cb(null, type);
+  });
+};
+
+/**
+ * Determine the module type from an AST node
+ *
+ * @param  {Object} node
+ * @return {String | null}
+ */
+function fromAST(node) {
   if (types.isNamedForm(node))        return 'named';
   if (types.isDependencyForm(node))   return 'deps';
   if (types.isREMForm(node))          return 'rem';
@@ -40,3 +60,45 @@ module.exports = function getModuleType(node) {
 
   return null;
 }
+
+/**
+ * Determine the module type by walking the supplied source code's AST
+ *
+ * @param  {String} source
+ * @return {String|null}
+ */
+function fromSource(source) {
+  if (typeof source === 'undefined') throw new Error('source missing');
+
+  var type;
+  var self = this;
+  var walker = new Walker();
+
+  walker.walk(source, function(node) {
+    type = fromAST(node);
+
+    if (type) {
+      walker.stopWalking();
+    }
+  });
+
+  return type;
+}
+
+/**
+ * Synchronously determine the module type of the given filepath.
+ *
+ * @param  {String} filepath
+ * @return {String|null}
+ */
+function sync(filepath) {
+  if (! filepath) throw new Error('filename missing');
+
+  var source = fs.readFileSync(filepath);
+
+  return fromSource(source);
+}
+
+module.exports.fromAST = fromAST;
+module.exports.fromSource = fromSource;
+module.exports.sync = sync;
