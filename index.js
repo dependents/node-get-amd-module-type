@@ -17,8 +17,6 @@ var fs = require('fs');
  * @returns {String|null} the supported type of module syntax used, or null
  */
 module.exports = function(file, cb) {
-  var self = this;
-
   if (! file) {
     return cb(new Error('filename missing'));
   }
@@ -71,7 +69,6 @@ function fromSource(source) {
   if (typeof source === 'undefined') throw new Error('source missing');
 
   var type;
-  var self = this;
   var walker = new Walker();
 
   walker.walk(source, function(node) {
