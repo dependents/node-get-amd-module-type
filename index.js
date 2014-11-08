@@ -21,10 +21,6 @@ module.exports = function(file, cb) {
     return cb(new Error('filename missing'));
   }
 
-  if (! cb) {
-    return cb(new Error('callback missing'));
-  }
-
   fs.readFile(file, { encoding: 'utf8' }, function (err, data) {
     if (err) {
       return cb(err);
@@ -38,7 +34,7 @@ module.exports = function(file, cb) {
       return cb(error);
     }
 
-    cb(null, type);
+    if (cb) cb(null, type);
   });
 };
 
