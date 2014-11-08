@@ -65,13 +65,34 @@ describe('get-amd-module-type', function() {
             done();
         });
     });
+
+    it('should throw an error if argument is missing', function() {
+        assert.throws(function() {
+            getType(path.resolve(__dirname, 'dep.js'));
+        }, /callback/);
+        assert.throws(function() {
+            getType();
+        }, /filename/);
+    });
   });
 
   describe('Sync tests', function() {
     testMethodAgainstExpected(syncTest);
+
+    it('should throw an error if an argument is missing', function() {
+        assert.throws(function() {
+            getType.sync();
+        }, /filename/);
+    });
   });
 
   describe('From source tests', function() {
     testMethodAgainstExpected(sourceTest);
+
+    it('should throw an error if an argument is missing', function() {
+        assert.throws(function() {
+            getType.fromSource();
+        }, /source/);
+    });
   });
 });

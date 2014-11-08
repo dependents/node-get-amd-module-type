@@ -18,7 +18,11 @@ var fs = require('fs');
  */
 module.exports = function(file, cb) {
   if (! file) {
-    return cb(new Error('filename missing'));
+    throw new Error('filename missing');
+  }
+
+  if (! cb) {
+    throw new Error('callback missing');
   }
 
   fs.readFile(file, { encoding: 'utf8' }, function (err, data) {
