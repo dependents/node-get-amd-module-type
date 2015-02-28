@@ -16,7 +16,9 @@
   "keywords": [
     "module",
     "type",
-    "amd"
+    "amd",
+    "factory",
+    "form"
   ],
   "author": "Joel Kemp <joel@mrjoelkemp.com>",
   "license": "MIT",
