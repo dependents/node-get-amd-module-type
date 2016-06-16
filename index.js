@@ -66,7 +66,7 @@ function fromAST(node) {
  * @return {String|null}
  */
 function fromSource(source) {
-  if (typeof source === 'undefined') throw new Error('source missing');
+  if (typeof source === 'undefined') { throw new Error('source missing'); }
 
   var type;
   var walker = new Walker();
@@ -91,7 +91,7 @@ function fromSource(source) {
 function sync(filepath) {
   if (! filepath) throw new Error('filename missing');
 
-  var source = fs.readFileSync(filepath);
+  var source = fs.readFileSync(filepath, 'utf8');
 
   return fromSource(source);
 }
