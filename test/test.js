@@ -38,7 +38,7 @@ function syncTest(filename, result) {
 
 function sourceTest(filename, result) {
     it('returns `' + result + '` for ' + filename, function() {
-        var source = fs.readFileSync(path.resolve(__dirname, filename));
+        var source = fs.readFileSync(path.resolve(__dirname, filename), 'utf8');
         var type = getType.fromSource(source);
         assert.equal(type, result);
     });
