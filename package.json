@@ -26,6 +26,9 @@
     "url": "https://github.com/mrjoelkemp/node-get-amd-module-type/issues"
   },
   "homepage": "https://github.com/mrjoelkemp/node-get-amd-module-type",
+  "engines": {
+    "node": ">=6.0"
+  },
   "devDependencies": {
     "mocha": "~2.0.1"
   },
