@@ -1,6 +1,8 @@
-var Walker = require('node-source-walk');
-var types = require('ast-module-types');
-var fs = require('fs');
+'use strict';
+
+const Walker = require('node-source-walk');
+const types = require('ast-module-types');
+const fs = require('fs');
 
 /**
  * Asynchronously identifies the AMD module type of the given file
@@ -30,7 +32,7 @@ module.exports = function(file, cb) {
       return cb(err);
     }
 
-    var type;
+    let type;
 
     try {
       type = fromSource(data);
@@ -68,8 +70,8 @@ function fromAST(node) {
 function fromSource(source) {
   if (typeof source === 'undefined') { throw new Error('source missing'); }
 
-  var type;
-  var walker = new Walker();
+  let type;
+  const walker = new Walker();
 
   walker.walk(source, function(node) {
     type = fromAST(node);
@@ -91,7 +93,7 @@ function fromSource(source) {
 function sync(filepath) {
   if (! filepath) throw new Error('filename missing');
 
-  var source = fs.readFileSync(filepath, 'utf8');
+  const source = fs.readFileSync(filepath, 'utf8');
 
   return fromSource(source);
 }
