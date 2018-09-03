@@ -1,9 +1,11 @@
-var getType = require('../');
-var fs = require('fs');
-var path = require('path');
-var assert = require('assert');
+'use strict';
 
-var expected = {
+const getType = require('../');
+const fs = require('fs');
+const path = require('path');
+const assert = require('assert');
+
+const expected = {
     './factory.js': 'factory',
     './nodep.js': 'nodeps',
     './named.js': 'named',
@@ -31,15 +33,15 @@ function asyncTest(filename, result) {
 
 function syncTest(filename, result) {
     it('returns `' + result + '` for ' + filename, function() {
-        var type = getType.sync(path.resolve(__dirname, filename));
+        const type = getType.sync(path.resolve(__dirname, filename));
         assert.equal(type, result);
     });
 }
 
 function sourceTest(filename, result) {
     it('returns `' + result + '` for ' + filename, function() {
-        var source = fs.readFileSync(path.resolve(__dirname, filename), 'utf8');
-        var type = getType.fromSource(source);
+        const source = fs.readFileSync(path.resolve(__dirname, filename), 'utf8');
+        const type = getType.fromSource(source);
         assert.equal(type, result);
     });
 }
