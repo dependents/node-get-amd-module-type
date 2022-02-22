@@ -1,6 +1,6 @@
 {
   "name": "get-amd-module-type",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Get the type of AMD module used for an AST node or within a file",
   "main": "index.js",
   "files": [
