@@ -1,8 +1,8 @@
 'use strict';
 
+const fs = require('fs');
 const Walker = require('node-source-walk');
 const types = require('ast-module-types');
-const fs = require('fs');
 
 /**
  * Asynchronously identifies the AMD module type of the given file
@@ -19,24 +19,17 @@ const fs = require('fs');
  * @returns {String|null} the supported type of module syntax used, or null
  */
 module.exports = function(file, cb) {
-  if (! file) {
-    throw new Error('filename missing');
-  }
+  if (!file) throw new Error('filename missing');
+  if (!cb) throw new Error('callback missing');
 
-  if (! cb) {
-    throw new Error('callback missing');
-  }
-
-  fs.readFile(file, { encoding: 'utf8' }, function (err, data) {
-    if (err) {
-      return cb(err);
-    }
+  fs.readFile(file, 'utf8', (err, data) => {
+    if (err) return cb(err);
 
     let type;
 
     try {
       type = fromSource(data);
-    } catch(error) {
+    } catch (error) {
       return cb(error);
     }
 
@@ -51,10 +44,10 @@ module.exports = function(file, cb) {
  * @return {String | null}
  */
 function fromAST(node) {
-  if (types.isNamedForm(node))        return 'named';
-  if (types.isDependencyForm(node))   return 'deps';
-  if (types.isREMForm(node))          return 'rem';
-  if (types.isFactoryForm(node))      return 'factory';
+  if (types.isNamedForm(node)) return 'named';
+  if (types.isDependencyForm(node)) return 'deps';
+  if (types.isREMForm(node)) return 'rem';
+  if (types.isFactoryForm(node)) return 'factory';
   if (types.isNoDependencyForm(node)) return 'nodeps';
   if (types.isAMDDriverScriptRequire(node)) return 'driver';
 
@@ -68,12 +61,12 @@ function fromAST(node) {
  * @return {String|null}
  */
 function fromSource(source) {
-  if (typeof source === 'undefined') { throw new Error('source missing'); }
+  if (typeof source === 'undefined') throw new Error('source missing');
 
   let type;
   const walker = new Walker();
 
-  walker.walk(source, function(node) {
+  walker.walk(source, (node) => {
     type = fromAST(node);
 
     if (type) {
@@ -91,7 +84,7 @@ function fromSource(source) {
  * @return {String|null}
  */
 function sync(filepath) {
-  if (! filepath) throw new Error('filename missing');
+  if (!filepath) throw new Error('filename missing');
 
   const source = fs.readFileSync(filepath, 'utf8');
 
