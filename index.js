@@ -8,7 +8,7 @@ const types = require('ast-module-types');
  * Asynchronously identifies the AMD module type of the given file
  *
  * @param {Object|String} file - filename
- * @param {Function} cb - Executed with (err, type)
+ * @param {Function} cb - Executed with (error, type)
  *
  * @example
  * define('name', [deps], func)    'named'
@@ -22,8 +22,8 @@ module.exports = function(file, cb) {
   if (!file) throw new Error('filename missing');
   if (!cb) throw new Error('callback missing');
 
-  fs.readFile(file, 'utf8', (err, data) => {
-    if (err) return cb(err);
+  fs.readFile(file, 'utf8', (error, data) => {
+    if (error) return cb(error);
 
     let type;
 
@@ -80,13 +80,13 @@ function fromSource(source) {
 /**
  * Synchronously determine the module type of the given filepath.
  *
- * @param  {String} filepath
+ * @param  {String} file - filename
  * @return {String|null}
  */
-function sync(filepath) {
-  if (!filepath) throw new Error('filename missing');
+function sync(file) {
+  if (!file) throw new Error('filename missing');
 
-  const source = fs.readFileSync(filepath, 'utf8');
+  const source = fs.readFileSync(file, 'utf8');
 
   return fromSource(source);
 }
