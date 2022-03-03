@@ -2,7 +2,7 @@
 
 'use strict';
 
-const assert = require('assert');
+const assert = require('assert').strict;
 const fs = require('fs');
 const path = require('path');
 const getType = require('../index.js');
@@ -26,8 +26,8 @@ function testMethodAgainstExpected(method) {
 function asyncTest(filename, result) {
   it(`returns "${result}" for ${filename}`, (done) => {
     getType(path.resolve(__dirname, 'fixtures', filename), (error, type) => {
-      assert.strictEqual(error, null);
-      assert.strictEqual(type, result);
+      assert.equal(error, null);
+      assert.equal(type, result);
       done();
     });
   });
@@ -36,7 +36,7 @@ function asyncTest(filename, result) {
 function syncTest(filename, result) {
   it(`returns "${result}" for ${filename}`, () => {
     const type = getType.sync(path.resolve(__dirname, 'fixtures', filename));
-    assert.strictEqual(type, result);
+    assert.equal(type, result);
   });
 }
 
@@ -44,7 +44,7 @@ function sourceTest(filename, result) {
   it(`returns "${result}" for ${filename}`, () => {
     const source = fs.readFileSync(path.resolve(__dirname, 'fixtures', filename), 'utf8');
     const type = getType.fromSource(source);
-    assert.strictEqual(type, result);
+    assert.equal(type, result);
   });
 }
 
@@ -54,18 +54,18 @@ describe('get-amd-module-type', () => {
 
     it('reports an error for non-existing file', (done) => {
       getType('no_such_file', (error) => {
-        assert.notStrictEqual(error, null);
+        assert.notEqual(error, null);
         // ENOENT errors always contains filename
-        assert.notStrictEqual(error.toString().indexOf('no_such_file'), -1, error);
+        assert.notEqual(error.toString().indexOf('no_such_file'), -1, error);
         done();
       });
     });
 
     it('reports an error for file with syntax error', (done) => {
       getType(path.resolve(__dirname, 'fixtures', 'invalid.js'), (error) => {
-        assert.notStrictEqual(error, null);
+        assert.notEqual(error, null);
         // Check error not to be ENOENT
-        assert.strictEqual(error.toString().includes('invalid.js'), false, error);
+        assert.equal(error.toString().includes('invalid.js'), false, error);
         done();
       });
     });
