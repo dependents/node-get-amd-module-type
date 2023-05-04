@@ -18,13 +18,13 @@ const expected = {
 };
 
 function testMethodAgainstExpected(method) {
-  Object.keys(expected).forEach((file) => {
+  for (const file of Object.keys(expected)) {
     method(file, expected[file]);
-  });
+  }
 }
 
 function asyncTest(filename, result) {
-  it(`returns "${result}" for ${filename}`, (done) => {
+  it(`returns "${result}" for ${filename}`, done => {
     getType(path.resolve(__dirname, 'fixtures', filename), (error, type) => {
       assert.equal(error, null);
       assert.equal(type, result);
@@ -52,8 +52,8 @@ describe('get-amd-module-type', () => {
   describe('Async tests', () => {
     testMethodAgainstExpected(asyncTest);
 
-    it('reports an error for non-existing file', (done) => {
-      getType('no_such_file', (error) => {
+    it('reports an error for non-existing file', done => {
+      getType('no_such_file', error => {
         assert.notEqual(error, null);
         // ENOENT errors always contains filename
         assert.notEqual(error.toString().indexOf('no_such_file'), -1, error);
@@ -61,8 +61,8 @@ describe('get-amd-module-type', () => {
       });
     });
 
-    it('reports an error for file with syntax error', (done) => {
-      getType(path.resolve(__dirname, 'fixtures', 'invalid.js'), (error) => {
+    it('reports an error for file with syntax error', done => {
+      getType(path.resolve(__dirname, 'fixtures', 'invalid.js'), error => {
         assert.notEqual(error, null);
         // Check error not to be ENOENT
         assert.equal(error.toString().includes('invalid.js'), false, error);
