@@ -73,10 +73,10 @@ describe('get-amd-module-type', () => {
     it('should throw an error if argument is missing', () => {
       assert.throws(() => {
         getType(path.resolve(__dirname, 'fixtures', 'dep.js'));
-      }, /callback/);
+      }, /^Error: callback missing$/);
       assert.throws(() => {
         getType();
-      }, /filename/);
+      }, /^Error: filename missing$/);
     });
   });
 
@@ -86,7 +86,7 @@ describe('get-amd-module-type', () => {
     it('should throw an error if an argument is missing', () => {
       assert.throws(() => {
         getType.sync();
-      }, /filename/);
+      }, /^Error: filename missing$/);
     });
   });
 
@@ -96,7 +96,7 @@ describe('get-amd-module-type', () => {
     it('should throw an error if an argument is missing', () => {
       assert.throws(() => {
         getType.fromSource();
-      }, /source/);
+      }, /^Error: source missing$/);
     });
   });
 });
