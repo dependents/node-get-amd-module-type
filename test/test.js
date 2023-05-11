@@ -3,7 +3,7 @@
 'use strict';
 
 const assert = require('assert').strict;
-const { readFile } = require('fs/promises');
+const fs = require('fs');
 const path = require('path');
 const getType = require('../index.js');
 
@@ -41,8 +41,8 @@ function syncTest(filename, result) {
 }
 
 function sourceTest(filename, result) {
-  it(`returns "${result}" for ${filename}`, async() => {
-    const source = await readFile(path.resolve(__dirname, 'fixtures', filename), 'utf8');
+  it(`returns "${result}" for ${filename}`, () => {
+    const source = fs.readFileSync(path.resolve(__dirname, 'fixtures', filename), 'utf8');
     const type = getType.fromSource(source);
     assert.equal(type, result);
   });
@@ -90,8 +90,8 @@ describe('get-amd-module-type', () => {
     });
   });
 
-  describe('From source tests', async() => {
-    testMethodAgainstExpected(await sourceTest);
+  describe('From source tests', () => {
+    testMethodAgainstExpected(sourceTest);
 
     it('should throw an error if an argument is missing', () => {
       assert.throws(() => {
