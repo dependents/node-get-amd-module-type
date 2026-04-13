@@ -34,7 +34,7 @@ module.exports = function(file, callback) {
       return callback(error);
     }
 
-    if (callback) callback(null, type);
+    callback(null, type);
   });
 };
 
