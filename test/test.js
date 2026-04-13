@@ -1,17 +1,19 @@
-/* eslint-env mocha */
-
 'use strict';
 
 const assert = require('assert').strict;
 const fs = require('fs');
 const path = require('path');
+const { promisify } = require('util');
 const getType = require('../index.js');
+
+const getTypeAsync = promisify(getType);
 
 const expected = {
   './factory.js': 'factory',
   './nodep.js': 'nodeps',
   './named.js': 'named',
   './dep.js': 'deps',
+  './dynamicRequire.js': 'deps',
   './rem.js': 'rem',
   './empty.js': null,
   './driver.js': 'driver'
@@ -24,12 +26,9 @@ function testMethodAgainstExpected(method) {
 }
 
 function asyncTest(filename, result) {
-  it(`returns "${result}" for ${filename}`, done => {
-    getType(path.resolve(__dirname, 'fixtures', filename), (error, type) => {
-      assert.equal(error, null);
-      assert.equal(type, result);
-      done();
-    });
+  it(`returns "${result}" for ${filename}`, async() => {
+    const type = await getTypeAsync(path.resolve(__dirname, 'fixtures', filename));
+    assert.equal(type, result);
   });
 }
 
@@ -52,22 +51,18 @@ describe('get-amd-module-type', () => {
   describe('Async tests', () => {
     testMethodAgainstExpected(asyncTest);
 
-    it('reports an error for non-existing file', done => {
-      getType('no_such_file', error => {
-        assert.notEqual(error, null);
-        // ENOENT errors always contains filename
-        assert.notEqual(error.toString().indexOf('no_such_file'), -1, error);
-        done();
-      });
+    it('reports an error for non-existing file', async() => {
+      await assert.rejects(
+        getTypeAsync('no_such_file'),
+        { code: 'ENOENT' }
+      );
     });
 
-    it('reports an error for file with syntax error', done => {
-      getType(path.resolve(__dirname, 'fixtures', 'invalid.js'), error => {
-        assert.notEqual(error, null);
-        // Check error not to be ENOENT
-        assert.equal(error.toString().includes('invalid.js'), false, error);
-        done();
-      });
+    it('reports an error for file with syntax error', async() => {
+      await assert.rejects(
+        getTypeAsync(path.resolve(__dirname, 'fixtures', 'invalid.js')),
+        { name: 'SyntaxError' }
+      );
     });
 
     it('should throw an error if argument is missing', () => {
