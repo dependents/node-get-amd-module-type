@@ -19,37 +19,18 @@ const expected = {
   './driver.js': 'driver'
 };
 
-function testMethodAgainstExpected(method) {
-  for (const file of Object.keys(expected)) {
-    method(file, expected[file]);
-  }
-}
-
-function asyncTest(filename, result) {
-  it(`returns "${result}" for ${filename}`, async() => {
-    const type = await getTypeAsync(path.resolve(__dirname, 'fixtures', filename));
-    assert.equal(type, result);
-  });
-}
-
-function syncTest(filename, result) {
-  it(`returns "${result}" for ${filename}`, () => {
-    const type = getType.sync(path.resolve(__dirname, 'fixtures', filename));
-    assert.equal(type, result);
-  });
-}
-
-function sourceTest(filename, result) {
-  it(`returns "${result}" for ${filename}`, () => {
-    const source = fs.readFileSync(path.resolve(__dirname, 'fixtures', filename), 'utf8');
-    const type = getType.fromSource(source);
-    assert.equal(type, result);
-  });
-}
+const fixture = file => path.resolve(__dirname, 'fixtures', file);
 
 describe('get-amd-module-type', () => {
+  const cases = Object.entries(expected);
+
   describe('Async tests', () => {
-    testMethodAgainstExpected(asyncTest);
+    for (const [file, result] of cases) {
+      it(`returns "${result}" for ${file}`, async() => {
+        const type = await getTypeAsync(fixture(file));
+        assert.equal(type, result);
+      });
+    }
 
     it('reports an error for non-existing file', async() => {
       await assert.rejects(
@@ -60,14 +41,14 @@ describe('get-amd-module-type', () => {
 
     it('reports an error for file with syntax error', async() => {
       await assert.rejects(
-        getTypeAsync(path.resolve(__dirname, 'fixtures', 'invalid.js')),
+        getTypeAsync(fixture('invalid.js')),
         { name: 'SyntaxError' }
       );
     });
 
     it('should throw an error if argument is missing', () => {
       assert.throws(() => {
-        getType(path.resolve(__dirname, 'fixtures', 'dep.js'));
+        getType(fixture('dep.js'));
       }, /^Error: callback missing$/);
       assert.throws(() => {
         getType();
@@ -76,7 +57,12 @@ describe('get-amd-module-type', () => {
   });
 
   describe('Sync tests', () => {
-    testMethodAgainstExpected(syncTest);
+    for (const [file, result] of cases) {
+      it(`returns "${result}" for ${file}`, () => {
+        const type = getType.sync(fixture(file));
+        assert.equal(type, result);
+      });
+    }
 
     it('should throw an error if an argument is missing', () => {
       assert.throws(() => {
@@ -86,7 +72,13 @@ describe('get-amd-module-type', () => {
   });
 
   describe('From source tests', () => {
-    testMethodAgainstExpected(sourceTest);
+    for (const [file, result] of cases) {
+      it(`returns "${result}" for ${file}`, () => {
+        const source = fs.readFileSync(fixture(file), 'utf8');
+        const type = getType.fromSource(source);
+        assert.equal(type, result);
+      });
+    }
 
     it('should throw an error if an argument is missing', () => {
       assert.throws(() => {
