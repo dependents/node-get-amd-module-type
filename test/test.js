@@ -92,3 +92,15 @@ fromSourceTests('should throw an error if an argument is missing', () => {
 });
 
 fromSourceTests.run();
+
+const fromASTTests = suite('From AST tests');
+
+fromASTTests('returns null for a null node', () => {
+  assert.equal(getType.fromAST(null), null);
+});
+
+fromASTTests('returns null for an undefined node', () => {
+  assert.equal(getType.fromAST(undefined), null);
+});
+
+fromASTTests.run();
