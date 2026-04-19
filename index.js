@@ -42,7 +42,7 @@ module.exports = function(file, callback) {
  * Determine the module type from an AST node
  *
  * @param  {Object|null|undefined} node
- * @return {String | null}
+ * @return {String|null}
  */
 function fromAST(node) {
   if (!node) return null;
