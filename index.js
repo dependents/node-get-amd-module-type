@@ -5,25 +5,23 @@ const Walker = require('node-source-walk');
 const types = require('ast-module-types');
 
 /**
- * Asynchronously identifies the AMD module type of the given file
+ * Asynchronously identifies the AMD module type of the given file.
  *
- * @param {Object|String} file - filename
- * @param {Function} callback - Executed with (error, type)
+ * @param {string} filename
+ * @param {Function} callback - Called with (error, type)
  *
  * @example
- * define('name', [deps], func)    'named'
- * define([deps], func)            'deps'
- * define(func(require))           'factory'
- * define({})                      'nodeps'
- *
- * @returns {String|null} the supported type of module syntax used, or null
+ * define('name', [deps], func)   // 'named'
+ * define([deps], func)           // 'deps'
+ * define(func(require))          // 'factory'
+ * define({})                     // 'nodeps'
  */
-module.exports = function(file, callback) {
-  if (!file) throw new Error('filename missing');
+module.exports = function(filename, callback) {
+  if (!filename) throw new Error('filename missing');
   if (!callback) throw new Error('callback missing');
 
   // eslint-disable-next-line n/prefer-promises/fs
-  fs.readFile(file, 'utf8', (error, data) => {
+  fs.readFile(filename, 'utf8', (error, data) => {
     if (error) return callback(error);
 
     let type;
@@ -39,10 +37,10 @@ module.exports = function(file, callback) {
 };
 
 /**
- * Determine the module type from an AST node
+ * Determines the AMD module type from an AST node.
  *
- * @param  {Object} node
- * @return {String | null}
+ * @param {Object} node
+ * @returns {string|null}
  */
 function fromAST(node) {
   if (types.isNamedForm(node)) return 'named';
@@ -56,10 +54,10 @@ function fromAST(node) {
 }
 
 /**
- * Determine the module type by walking the supplied source code's AST
+ * Determines the AMD module type by walking the given source code's AST.
  *
- * @param  {String} source
- * @return {String|null}
+ * @param {string} source
+ * @returns {string|null}
  */
 function fromSource(source) {
   if (source === undefined) throw new Error('source missing');
@@ -79,15 +77,15 @@ function fromSource(source) {
 }
 
 /**
- * Synchronously determine the module type of the given filepath.
+ * Synchronously determines the AMD module type of the given file.
  *
- * @param  {String} file - filename
- * @return {String|null}
+ * @param {string} filename
+ * @returns {string|null}
  */
-function sync(file) {
-  if (!file) throw new Error('filename missing');
+function sync(filename) {
+  if (!filename) throw new Error('filename missing');
 
-  const source = fs.readFileSync(file, 'utf8');
+  const source = fs.readFileSync(filename, 'utf8');
 
   return fromSource(source);
 }
