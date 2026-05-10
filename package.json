@@ -37,8 +37,8 @@
     "node": ">=20.19.0 || >=22.12.0"
   },
   "dependencies": {
-    "ast-module-types": "^6.0.1",
-    "node-source-walk": "^7.0.1"
+    "ast-module-types": "^7.0.0",
+    "node-source-walk": "^8.0.0"
   },
   "devDependencies": {
     "c8": "^11.0.0",
