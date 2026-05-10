@@ -1,8 +1,6 @@
-'use strict';
-
-const fs = require('node:fs');
-const Walker = require('node-source-walk');
-const types = require('ast-module-types');
+import fs from 'node:fs';
+import Walker from 'node-source-walk';
+import * as types from 'ast-module-types';
 
 /**
  * Asynchronously identifies the AMD module type of the given file.
@@ -16,7 +14,7 @@ const types = require('ast-module-types');
  * define(func(require))          // 'factory'
  * define({})                     // 'nodeps'
  */
-module.exports = function(filename, callback) {
+function getType(filename, callback) {
   if (!filename) throw new Error('filename missing');
   if (!callback) throw new Error('callback missing');
 
@@ -34,7 +32,7 @@ module.exports = function(filename, callback) {
 
     callback(null, type);
   });
-};
+}
 
 /**
  * Determines the AMD module type from an AST node.
@@ -90,6 +88,8 @@ function sync(filename) {
   return fromSource(source);
 }
 
-module.exports.fromAST = fromAST;
-module.exports.fromSource = fromSource;
-module.exports.sync = sync;
+getType.fromAST = fromAST;
+getType.fromSource = fromSource;
+getType.sync = sync;
+
+export default getType;

@@ -1,13 +1,13 @@
-'use strict';
-
-const assert = require('node:assert').strict;
-const fs = require('node:fs');
-const path = require('node:path');
-const { promisify } = require('node:util');
-const { suite } = require('uvu');
-const getType = require('../index.js');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
+import { suite } from 'uvu';
+import getType from '../index.js';
 
 const getTypeAsync = promisify(getType);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const expected = {
   './factory.js': 'factory',
