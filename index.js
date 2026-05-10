@@ -1,6 +1,6 @@
 'use strict';
 
-const fs = require('fs');
+const fs = require('node:fs');
 const Walker = require('node-source-walk');
 const types = require('ast-module-types');
 
@@ -28,7 +28,7 @@ module.exports = function(filename, callback) {
 
     try {
       type = fromSource(data);
-    } catch (error) {
+    } catch(error) {
       return callback(error);
     }
 
