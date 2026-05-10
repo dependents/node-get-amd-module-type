@@ -1,6 +1,13 @@
 import fs from 'node:fs';
 import Walker from 'node-source-walk';
-import * as types from 'ast-module-types';
+import {
+  isNamedForm,
+  isDependencyForm,
+  isREMForm,
+  isFactoryForm,
+  isNoDependencyForm,
+  isAMDDriverScriptRequire
+} from 'ast-module-types';
 
 /**
  * Asynchronously identifies the AMD module type of the given file.
@@ -41,12 +48,12 @@ function getType(filename, callback) {
  * @returns {string|null}
  */
 function fromAST(node) {
-  if (types.isNamedForm(node)) return 'named';
-  if (types.isDependencyForm(node)) return 'deps';
-  if (types.isREMForm(node)) return 'rem';
-  if (types.isFactoryForm(node)) return 'factory';
-  if (types.isNoDependencyForm(node)) return 'nodeps';
-  if (types.isAMDDriverScriptRequire(node)) return 'driver';
+  if (isNamedForm(node)) return 'named';
+  if (isDependencyForm(node)) return 'deps';
+  if (isREMForm(node)) return 'rem';
+  if (isFactoryForm(node)) return 'factory';
+  if (isNoDependencyForm(node)) return 'nodeps';
+  if (isAMDDriverScriptRequire(node)) return 'driver';
 
   return null;
 }
