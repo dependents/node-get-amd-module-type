@@ -1,8 +1,13 @@
-'use strict';
-
-const fs = require('fs');
-const Walker = require('node-source-walk');
-const types = require('ast-module-types');
+import fs from 'node:fs';
+import Walker from 'node-source-walk';
+import {
+  isNamedForm,
+  isDependencyForm,
+  isREMForm,
+  isFactoryForm,
+  isNoDependencyForm,
+  isAMDDriverScriptRequire
+} from 'ast-module-types';
 
 /**
  * Asynchronously identifies the AMD module type of the given file.
@@ -16,7 +21,7 @@ const types = require('ast-module-types');
  * define(func(require))          // 'factory'
  * define({})                     // 'nodeps'
  */
-module.exports = function(filename, callback) {
+function getType(filename, callback) {
   if (!filename) throw new Error('filename missing');
   if (!callback) throw new Error('callback missing');
 
@@ -28,13 +33,13 @@ module.exports = function(filename, callback) {
 
     try {
       type = fromSource(data);
-    } catch (error) {
+    } catch(error) {
       return callback(error);
     }
 
     callback(null, type);
   });
-};
+}
 
 /**
  * Determines the AMD module type from an AST node.
@@ -43,12 +48,12 @@ module.exports = function(filename, callback) {
  * @returns {string|null}
  */
 function fromAST(node) {
-  if (types.isNamedForm(node)) return 'named';
-  if (types.isDependencyForm(node)) return 'deps';
-  if (types.isREMForm(node)) return 'rem';
-  if (types.isFactoryForm(node)) return 'factory';
-  if (types.isNoDependencyForm(node)) return 'nodeps';
-  if (types.isAMDDriverScriptRequire(node)) return 'driver';
+  if (isNamedForm(node)) return 'named';
+  if (isDependencyForm(node)) return 'deps';
+  if (isREMForm(node)) return 'rem';
+  if (isFactoryForm(node)) return 'factory';
+  if (isNoDependencyForm(node)) return 'nodeps';
+  if (isAMDDriverScriptRequire(node)) return 'driver';
 
   return null;
 }
@@ -90,6 +95,8 @@ function sync(filename) {
   return fromSource(source);
 }
 
-module.exports.fromAST = fromAST;
-module.exports.fromSource = fromSource;
-module.exports.sync = sync;
+getType.fromAST = fromAST;
+getType.fromSource = fromSource;
+getType.sync = sync;
+
+export default getType;

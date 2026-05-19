@@ -13,6 +13,9 @@ npm install get-amd-module-type
 ## Usage
 
 ```js
+// ESM
+import getType from 'get-amd-module-type';
+// or CJS
 const getType = require('get-amd-module-type');
 
 // Async
